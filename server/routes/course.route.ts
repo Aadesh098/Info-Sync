@@ -2,7 +2,7 @@ import express from "express";
 import {
   addAnwser,
   addQuestion,
-  // addReplyToReview,
+  addReplyToReview,
   addReview,
   // deleteCourse,
   editCourse,
@@ -49,12 +49,12 @@ courseRouter.put("/add-question", isAutheticated, addQuestion);
 
 courseRouter.put("/add-review/:id", isAutheticated, addReview);
 
-// courseRouter.put(
-//   "/add-reply",
-//   isAutheticated,
-//   authorizeRoles("admin"),
-//   addReplyToReview
-// );
+courseRouter.put(
+  "/add-reply",
+  isAutheticated,
+  authorizeRoles("admin"),
+  addReplyToReview
+);
 
 // courseRouter.post("/getVdoCipherOTP", generateVideoUrl);
 

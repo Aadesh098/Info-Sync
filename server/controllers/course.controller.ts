@@ -362,7 +362,7 @@ export const addReview = CatchAsyncError(
 
       await course?.save();
 
-      // await redis.set(courseId, JSON.stringify(course), "EX", 604800); 
+      await redis.set(courseId, JSON.stringify(course), "EX", 604800); 
 
       const notification = {
         title: "New Review Received",
