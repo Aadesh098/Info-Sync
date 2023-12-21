@@ -9,7 +9,7 @@ import courseRouter from "./routes/course.route";
 import orderRouter from "./routes/order.route";
 import notificationRouter from "./routes/notification.route";
 import analyticsRouter from "./routes/analytics.route";
-// import layoutRouter from "./routes/layout.route";
+import layoutRouter from "./routes/layout.route";
 import { rateLimit } from 'express-rate-limit'
 
 // body parser
@@ -42,7 +42,7 @@ app.use(
   courseRouter,
   notificationRouter,
   analyticsRouter,
-  // layoutRouter
+  layoutRouter
 );
 
 // testing api
