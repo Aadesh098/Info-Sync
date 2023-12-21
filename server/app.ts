@@ -8,7 +8,7 @@ import userRouter from "./routes/user.route";
 import courseRouter from "./routes/course.route";
 import orderRouter from "./routes/order.route";
 import notificationRouter from "./routes/notification.route";
-// import analyticsRouter from "./routes/analytics.route";
+import analyticsRouter from "./routes/analytics.route";
 // import layoutRouter from "./routes/layout.route";
 import { rateLimit } from 'express-rate-limit'
 
@@ -41,7 +41,7 @@ app.use(
   orderRouter,
   courseRouter,
   notificationRouter,
-  // analyticsRouter,
+  analyticsRouter,
   // layoutRouter
 );
 
