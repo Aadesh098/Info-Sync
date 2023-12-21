@@ -4,10 +4,10 @@ import {
   addQuestion,
   addReplyToReview,
   addReview,
-  // deleteCourse,
+  deleteCourse,
   editCourse,
   // generateVideoUrl,
-  // getAdminAllCourses,
+  getAdminAllCourses,
   getAllCourses,
   getCourseByUser,
   getSingleCourse,
@@ -34,18 +34,18 @@ courseRouter.get("/get-course/:id", getSingleCourse);
 
 courseRouter.get("/get-courses", getAllCourses);
 
-// courseRouter.get(
-//   "/get-admin-courses",
-//   isAutheticated,
-//   authorizeRoles("admin"),
-//   getAdminAllCourses
-// );
+courseRouter.get(
+  "/get-admin-courses",
+  isAutheticated,
+  authorizeRoles("admin"),
+  getAdminAllCourses
+);
 
 courseRouter.get("/get-course-content/:id", isAutheticated, getCourseByUser);
 
 courseRouter.put("/add-question", isAutheticated, addQuestion);
 
- courseRouter.put("/add-answer", isAutheticated, addAnwser);
+courseRouter.put("/add-answer", isAutheticated, addAnwser);
 
 courseRouter.put("/add-review/:id", isAutheticated, addReview);
 
@@ -58,11 +58,11 @@ courseRouter.put(
 
 // courseRouter.post("/getVdoCipherOTP", generateVideoUrl);
 
-// courseRouter.delete(
-//   "/delete-course/:id",
-//   isAutheticated,
-//   authorizeRoles("admin"),
-//   deleteCourse
-// );
+courseRouter.delete(
+  "/delete-course/:id",
+  isAutheticated,
+  authorizeRoles("admin"),
+  deleteCourse
+);
 
 export default courseRouter;
