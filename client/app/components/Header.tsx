@@ -38,6 +38,14 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute }) => {
     });
   }
 
+  const handleClose = (e: any) => {
+    if (e.target.id === "screen") {
+      {
+        setOpenSidebar(false);
+      }
+    }
+  };
+
   return (
     <div className="w-full relative">
       <div
@@ -73,11 +81,31 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, open, setRoute }) => {
                 className="hidden 800px:block cursor-pointer dark:text-white text-black"
                 onClick={() => setOpen(true)}
               />
-            </div>  
+            </div>
           </div>
         </div>
 
-        
+        {openSidebar && (
+          <div
+            className="fixed w-full h-screen top-0 left-0 z-[99999] dark:bg-[unset] bg-[#00000024]"
+            onClick={handleClose}
+            id="screen"
+          >
+            <div className="w-[70%] fixed z-[999999999] h-screen bg-white dark:bg-slate-900 dark:bg-opacity-90 top-0 right-0">
+              <NavItems activeItem={activeItem} isMobile={true} />
+              <HiOutlineUserCircle
+                  size={25}
+                  className="hidden 800px:block cursor-pointer dark:text-white text-black"
+                  onClick={() => setOpen(true)}
+                />
+                <br/>
+                <br/>
+                <p className="text-[16px] px-2 pl-5 text-black dark:text-white">
+                Copyright © 2023 ELearning
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
