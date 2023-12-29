@@ -40,7 +40,6 @@ const Signup: FC<Props> = ({ setRoute }) => {
       toast.error(errorData.data.message);
     }
    }
-   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isSuccess,error]);
   
 
