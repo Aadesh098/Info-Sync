@@ -3,15 +3,15 @@ import { IUser } from "./user.model";
 
 export interface IComment extends Document {
   user: IUser;
-  question : string ;
+  question: string;
   questionReplies: IComment[];
 }
 
 interface IReview extends Document {
   user: IUser;
-  rating: number;
+  rating?: number;
   comment: string;
-  commentReplies?: IComment[];
+  commentReplies?: IReview[];
 }
 
 interface ILink extends Document {
@@ -35,6 +35,7 @@ interface ICourseData extends Document {
  export interface ICourse extends Document {
   name: string;
   description: string;
+  categories: string;
   price: number;
   estimatedPrice?: number;
   thumbnail: object;
@@ -46,7 +47,7 @@ interface ICourseData extends Document {
   reviews: IReview[];
   courseData: ICourseData[];
   ratings?: number;
-  purchased?: number;
+  purchased: number;
 }
 
 const reviewSchema = new Schema<IReview>({
@@ -56,8 +57,8 @@ const reviewSchema = new Schema<IReview>({
     default: 0,
   },
   comment: String,
-  commentReplies: [Object] ,
-});
+  commentReplies: [Object],
+},{timestamps:true});
 
 const linkSchema = new Schema<ILink>({
   title: String,
@@ -68,10 +69,11 @@ const commentSchema = new Schema<IComment>({
   user: Object,
   question: String,
   questionReplies: [Object],
-});
+},{timestamps:true});
 
 const courseDataSchema = new Schema<ICourseData>({
   videoUrl: String,
+  videoThumbnail: Object,
   title: String,
   videoSection: String,
   description: String,
@@ -89,6 +91,10 @@ const courseSchema = new Schema<ICourse>({
   },
   description: {
     type: String,
+    required: true,
+  },
+  categories:{
+    type:String,
     required: true,
   },
   price: {

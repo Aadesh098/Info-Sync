@@ -10,7 +10,6 @@ import sendMail from "../utils/sendMail";
 import NotificationModel from "../models/notification.Model";
 import { getAllOrdersService, newOrder } from "../services/order.service";
 import { redis } from "../utils/redis";
-import courseRouter from "../routes/course.route";
 require("dotenv").config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
@@ -101,6 +100,7 @@ export const createOrder = CatchAsyncError(
       });
 
       course.purchased ? (course.purchased += 1) : (course.purchased = 1);
+
 
       await course.save();
 

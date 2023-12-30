@@ -43,10 +43,12 @@ export const editCourse = CatchAsyncError(
 
       const thumbnail = data.thumbnail;
 
-      //   const courseData = await CourseModel.findById(courseId) as any;
+      const courseId = req.params.id;
 
-      if (thumbnail) {
-        await cloudinary.v2.uploader.destroy(thumbnail.public_id);
+      const courseData = await CourseModel.findById(courseId) as any;
+
+      if (thumbnail && !thumbnail.startsWith("https")) {
+        await cloudinary.v2.uploader.destroy(courseData.thumbnail.public_id);
 
         const myCloud = await cloudinary.v2.uploader.upload(thumbnail, {
           folder: "courses",
@@ -58,7 +60,12 @@ export const editCourse = CatchAsyncError(
         };
       }
 
-      const courseId = req.params.id;
+      if (thumbnail.startsWith("https")) {
+        data.thumbnail = {
+          public_id: courseData?.thumbnail.public_id,
+          url: courseData?.thumbnail.url,
+        };
+      }
 
       const course = await CourseModel.findByIdAndUpdate(
         courseId,
@@ -114,33 +121,19 @@ export const getSingleCourse = CatchAsyncError(
 export const getAllCourses = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const isCacheExist = await redis.get("allCourses");
-
-      if (isCacheExist) {
-        const course = JSON.parse(isCacheExist);
-        res.status(200).json({
-          success: true,
-          course,
-        });
-      } else {
       const courses = await CourseModel.find().select(
         "-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links"
       );
-
-      await redis.set("allCourses", JSON.stringify(courses), "EX", 604800); // 7days
-
 
       res.status(200).json({
         success: true,
         courses,
       });
-    }
     } catch (error: any) {
       return next(new ErrorHandler(error.message, 500));
     }
   }
 );
-
 
 // get course content -- only for valid user
 export const getCourseByUser = CatchAsyncError(
@@ -360,17 +353,19 @@ export const addReview = CatchAsyncError(
       });
 
       if (course) {
-        course.ratings = avg / course.reviews.length; 
+        course.ratings = avg / course.reviews.length; // one example we have 2 reviews one is 5 another one is 4 so math working like this = 9 / 2  = 4.5 ratings
       }
 
       await course?.save();
 
-      await redis.set(courseId, JSON.stringify(course), "EX", 604800); 
+      await redis.set(courseId, JSON.stringify(course), "EX", 604800); // 7days
 
-      const notification = {
+      // create notification
+      await NotificationModel.create({
+        user: req.user?._id,
         title: "New Review Received",
         message: `${req.user?.name} has given a review in ${course?.name}`,
-      } ;
+      });
 
 
       res.status(200).json({
