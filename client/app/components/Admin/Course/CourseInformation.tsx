@@ -238,7 +238,6 @@ const CourseInformation: FC<Props> = ({
             onDrop={handleDrop}
           >
             {courseInfo.thumbnail ? (
-              // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={courseInfo.thumbnail}
                 alt=""
