@@ -1,157 +1,128 @@
-"use client";
-import React, { FC, useEffect, useState } from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import {
-  AiOutlineEye,
-  AiOutlineEyeInvisible,
-  AiFillGithub,
-} from "react-icons/ai";
-import { FcGoogle } from "react-icons/fc";
-import { styles } from "../../../app/styles/style";
-import { useRegisterMutation } from "@/redux/features/auth/authApi";
+import { styles } from "@/app/styles/style";
+import { useActivationMutation } from "@/redux/features/auth/authApi";
+import React, { FC, useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
+import { VscWorkspaceTrusted } from "react-icons/vsc";
+import { useSelector } from "react-redux";
 
 type Props = {
   setRoute: (route: string) => void;
 };
 
-const schema = Yup.object().shape({
-  name: Yup.string().required("Please enter your name!"),
-  email: Yup.string()
-    .email("Invalid email!")
-    .required("Please enter your email!"),
-  password: Yup.string().required("Please enter your password!").min(6),
-});
+type VerifyNumber = {
+  "0": string;
+  "1": string;
+  "2": string;
+  "3": string;
+};
 
-const Signup: FC<Props> = ({ setRoute }) => {
-  const [show, setShow] = useState(false);
-  const [register,{data,error,isSuccess}] = useRegisterMutation(); 
+const Verification: FC<Props> = ({ setRoute }) => {
+  const { token } = useSelector((state: any) => state.auth);
+  const [activation, { isSuccess, error }] = useActivationMutation();
+  const [invalidError, setInvalidError] = useState<boolean>(false);
 
   useEffect(() => {
-   if(isSuccess){
-      const message = data?.message || "Registration successful";
-      toast.success(message);
-      setRoute("Verification");
-   }
-   if(error){
-    if("data" in error){
-      const errorData = error as any;
-      toast.error(errorData.data.message);
+    if (isSuccess) {
+      toast.success("Account activated successfully");
+      setRoute("Login");
     }
-   }
-  }, [isSuccess,error]);
-  
+    if (error) {
+      if ("data" in error) {
+        const errorData = error as any;
+        toast.error(errorData.data.message);
+        setInvalidError(true);
+      } else {
+        console.log("An error occured:", error);
+      }
+    }
+  }, [isSuccess, error]);
 
-  const formik = useFormik({
-    initialValues: { name: "", email: "", password: "" },
-    validationSchema: schema,
-    onSubmit: async ({name, email, password }) => {
-      const data = {
-        name,email,password
-      };
-      await register(data);
-    },
+  const inputRefs = [
+    useRef<HTMLInputElement>(null),
+    useRef<HTMLInputElement>(null),
+    useRef<HTMLInputElement>(null),
+    useRef<HTMLInputElement>(null),
+  ];
+
+  const [verifyNumber, setVerifyNumber] = useState<VerifyNumber>({
+    0: "",
+    1: "",
+    2: "",
+    3: "",
   });
 
-  const { errors, touched, values, handleChange, handleSubmit } = formik;
+  const verificationHandler = async () => {
+    const verificationNumber = Object.values(verifyNumber).join("");
+    if (verificationNumber.length !== 4) {
+      setInvalidError(true);
+      return;
+    }
+    await activation({
+      activation_token: token,
+      activation_code: verificationNumber,
+    });
+  };
+
+  const handleInputChange = (index: number, value: string) => {
+    setInvalidError(false);
+    const newVerifyNumber = { ...verifyNumber, [index]: value };
+    setVerifyNumber(newVerifyNumber);
+
+    if (value === "" && index > 0) {
+      inputRefs[index - 1].current?.focus();
+    } else if (value.length === 1 && index < 3) {
+      inputRefs[index + 1].current?.focus();
+    }
+  };
 
   return (
-    <div className="w-full">
-      <h1 className={`${styles.title}`}>Join to ELearning</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className={`${styles.label}`} htmlFor="email">
-            Enter your Name
-          </label>
-          <input
-            type="text"
-            name=""
-            value={values.name}
-            onChange={handleChange}
-            id="name"
-            placeholder="johndoe"
-            className={`${errors.name && touched.name && "border-red-500"} ${
-              styles.input
-            }`}
-          />
-          {errors.name && touched.name && (
-            <span className="text-red-500 pt-2 block">{errors.name}</span>
-          )}
-        </div>
-        <label className={`${styles.label}`} htmlFor="email">
-          Enter your Email
-        </label>
-        <input
-          type="email"
-          name=""
-          value={values.email}
-          onChange={handleChange}
-          id="email"
-          placeholder="loginmail@gmail.com"
-          className={`${errors.email && touched.email && "border-red-500"} ${
-            styles.input
-          }`}
-        />
-        {errors.email && touched.email && (
-          <span className="text-red-500 pt-2 block">{errors.email}</span>
-        )}
-        <div className="w-full mt-5 relative mb-1">
-          <label className={`${styles.label}`} htmlFor="email">
-            Enter your password
-          </label>
-          <input
-            type={!show ? "password" : "text"}
-            name="password"
-            value={values.password}
-            onChange={handleChange}
-            id="password"
-            placeholder="password!@%"
-            className={`${
-              errors.password && touched.password && "border-red-500"
-            } ${styles.input}`}
-          />
-          {!show ? (
-            <AiOutlineEyeInvisible
-              className="absolute bottom-3 right-2 z-1 cursor-pointer"
-              size={20}
-              onClick={() => setShow(true)}
-            />
-          ) : (
-            <AiOutlineEye
-              className="absolute bottom-3 right-2 z-1 cursor-pointer"
-              size={20}
-              onClick={() => setShow(false)}
-            />
-          )}
-        </div>
-        {errors.password && touched.password && (
-          <span className="text-red-500 pt-2 block">{errors.password}</span>
-        )}
-        <div className="w-full mt-5">
-          <input type="submit" value="Sign Up" className={`${styles.button}`} />
-        </div>
-        <br />
-        <h5 className="text-center pt-4 font-Poppins text-[14px] text-black dark:text-white">
-          Or join with
-        </h5>
-        <div className="flex items-center justify-center my-3">
-          <FcGoogle size={30} className="cursor-pointer mr-2" />
-          <AiFillGithub size={30} className="cursor-pointer ml-2" />
-        </div>
-        <h5 className="text-center pt-4 font-Poppins text-[14px]">
-          Already have an account?{" "}
-          <span
-            className="text-[#2190ff] pl-1 cursor-pointer"
-            onClick={() => setRoute("Login")}
-          >
-            Sign in
-          </span>
-        </h5>
-      </form>
+    <div>
+      <h1 className={`${styles.title}`}>Verify Your Account</h1>
       <br />
+      <div className="w-full flex items-center justify-center mt-2">
+        <div className="w-[80px] h-[80px] rounded-full bg-[#497DF2] flex items-center justify-center">
+          <VscWorkspaceTrusted size={40} />
+        </div>
+      </div>
+      <br />
+      <br />
+      <div className="m-auto flex items-center justify-around">
+        {Object.keys(verifyNumber).map((key, index) => (
+          <input
+            type="number"
+            key={key}
+            ref={inputRefs[index]}
+            className={`w-[65px] h-[65px] bg-transparent border-[3px] rounded-[10px] flex items-center text-black dark:text-white justify-center text-[18px] font-Poppins outline-none text-center ${
+              invalidError
+                ? "shake border-red-500"
+                : "dark:border-white border-[#0000004a]"
+            }`}
+            placeholder=""
+            maxLength={1}
+            value={verifyNumber[key as keyof VerifyNumber]}
+            onChange={(e) => handleInputChange(index, e.target.value)}
+          />
+        ))}
+      </div>
+      <br />
+      <br />
+      <div className="w-full flex justify-center">
+        <button className={`${styles.button}`} onClick={verificationHandler}>
+          Verify OTP
+        </button>
+      </div>
+      <br />
+      <h5 className="text-center pt-4 font-Poppins text-[14px] text-black dark:text-white">
+        Go back to sign in?{" "}
+        <span
+          className="text-[#2190ff] pl-1 cursor-pointer"
+          onClick={() => setRoute("Login")}
+        >
+          Sign in
+        </span>
+      </h5>
     </div>
   );
 };
 
-export default Signup;
+export default Verification;
