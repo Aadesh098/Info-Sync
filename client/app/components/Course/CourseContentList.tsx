@@ -16,8 +16,9 @@ const CourseContentList: FC<Props> = (props) => {
 
   // Find unique video sections
   const videoSections: string[] = [
-    ...new Set<string>(props.data?.map((item: any) => item.videoSection)),
+    ...(new Set<string>(props.data?.map((item: any) => item.videoSection)) as any),
   ];
+  
 
   let totalCount: number = 0; // Total count of videos from previous sections
 
