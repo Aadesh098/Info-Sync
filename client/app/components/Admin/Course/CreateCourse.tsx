@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import CourseInformation from "./CourseInformation";
 import CourseOptions from "./CourseOptions";
 import CourseData from "./CourseData";
-import CourseContent from "../../Course/CourseContent";
+import CourseContent from "./CourseContent";
 import CoursePreview from "./CoursePreview";
 import { useCreateCourseMutation } from "../../../../redux/features/courses/coursesApi";
 import { toast } from "react-hot-toast";

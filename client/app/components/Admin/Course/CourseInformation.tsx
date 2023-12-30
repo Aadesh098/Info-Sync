@@ -1,7 +1,6 @@
 import { styles } from "@/app/styles/style";
 import { useGetHeroDataQuery } from "@/redux/features/layout/layoutApi";
 import React, { FC, useEffect, useState } from "react";
-import Image from "next/image";
 
 type Props = {
   courseInfo: any;
@@ -239,13 +238,11 @@ const CourseInformation: FC<Props> = ({
             onDrop={handleDrop}
           >
             {courseInfo.thumbnail ? (
-              <Image
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
                 src={courseInfo.thumbnail}
                 alt=""
                 className="max-h-full w-full object-cover"
-                // Add width and height based on your design requirements
-                width={100}
-                height={100}
               />
             ) : (
               <span className="text-black dark:text-white">
