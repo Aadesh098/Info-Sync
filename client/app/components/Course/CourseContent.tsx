@@ -4,7 +4,7 @@ import Loader from "../Loader/Loader";
 import Heading from "@/app/utils/Heading";
 import CourseContentMedia from "./CourseContentMedia";
 import Header from "../Header";
-import CourseContentList from "../Admin/Course/CourseContentList";
+import CourseContentList from "./CourseContentList";
 
 type Props = {
   id: string;
