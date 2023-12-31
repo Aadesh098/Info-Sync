@@ -44,7 +44,7 @@ export const createOrder = CatchAsyncError(
         );
       }
 
-      const course:ICourse | null = await CourseModel.findById(courseId);
+      const course: ICourse | null = await CourseModel.findById(courseId);
 
       if (!course) {
         return next(new ErrorHandler("Course not found", 404));
@@ -99,8 +99,7 @@ export const createOrder = CatchAsyncError(
         message: `You have a new order from ${course?.name}`,
       });
 
-      course.purchased ? (course.purchased += 1) : (course.purchased = 1);
-
+      course.purchased = course.purchased + 1;
 
       await course.save();
 
@@ -138,7 +137,17 @@ export const newPayment = CatchAsyncError(
       const myPayment = await stripe.paymentIntents.create({
         amount: req.body.amount,
         currency: "INR",
-        description: 'Software development services',
+        description: "for amazon-clone project",
+        shipping: {
+          name: "Random singh",
+          address: {
+            line1: "510 Townsend St",
+            postal_code: "98140",
+            city: "San Francisco",
+            state: "CA",
+            country: "US",
+          },
+        },
         metadata: {
           company: "InfoSync",
         },

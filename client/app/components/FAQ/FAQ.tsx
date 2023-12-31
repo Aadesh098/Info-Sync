@@ -38,7 +38,7 @@ const FAQ = (props: Props) => {
               <div key={q.id} className={`${
                 q.id !== questions[0]?.id && "border-t"
               } border-gray-200 pt-6`}>
-                <dt className="text-lg">
+                <dt key={q.id} className="text-lg">
                   <button
                     className="flex items-start justify-between w-full text-left focus:outline-none"
                     onClick={() => toggleQuestion(q.id)}
