@@ -33,11 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body
-        className={`${
-          typeof window === "undefined" ? "" : poppins.variable
-        } ${
-          typeof window === "undefined" ? "" : josefin.variable
-        } !bg-white bg-no-repeat dark:bg-gradient-to-b dark:from-gray-900 dark:to-black duration-300`}
+        className={`${poppins.variable} ${josefin.variable} !bg-white bg-no-repeat dark:bg-gradient-to-b dark:from-gray-900 dark:to-black duration-300`}
       >
         <Providers>
           <SessionProvider>
@@ -61,5 +57,5 @@ const Custom: FC<{ children: React.ReactNode }> = ({ children }) => {
     socketId.on("connection", () => {});
   }, []);
 
-  return <div>{isLoading ? <Loader /> : <div>{children}</div>}</div>;
+  return <div>{isLoading ? <Loader /> : <div>{children} </div>}</div>;
 };
