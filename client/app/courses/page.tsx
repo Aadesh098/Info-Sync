@@ -57,8 +57,8 @@ const Page = (props: Props) => {
           />
           <div className="w-[95%] 800px:w-[85%] m-auto min-h-[70vh]">
             <Heading
-              title={"All courses - Elearning"}
-              description={"Elearning is a programming community."}
+              title={"All courses - InfoSync"}
+              description={"InfoSync is a programming community."}
               keywords={
                 "programming community, coding skills, expert insights, collaboration, growth"
               }

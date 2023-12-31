@@ -139,7 +139,7 @@ export const newPayment = CatchAsyncError(
         amount: req.body.amount,
         currency: "INR",
         metadata: {
-          company: "E-Learning",
+          company: "InfoSync",
         },
         automatic_payment_methods: {
           enabled: true,
