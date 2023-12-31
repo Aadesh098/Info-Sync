@@ -53,7 +53,7 @@ const CourseDetailsPage = ({ id }: Props) => {
           <Heading
             title={data.course.name + " - InfoSync"}
             description={
-              "InfoSync is a programming community which is developed by shahriar sajeeb for helping programmers"
+              "InfoSync is a programming community which is developed by Aadesh for helping programmers"
             }
             keywords={data?.course?.tags}
           />

@@ -1,48 +1,51 @@
+// Importing necessary dependencies and styles
 import { styles } from '@/app/styles/style';
 import { useGetHeroDataQuery } from '@/redux/features/layout/layoutApi';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { HiMinus, HiPlus } from 'react-icons/hi';
 
-type Props = {}
+type Props = {};
 
 const FAQ = (props: Props) => {
-    const { data } = useGetHeroDataQuery("FAQ", {
-      });
-      const [activeQuestion, setActiveQuestion] = useState(null);
+  // Fetching data using the useGetHeroDataQuery hook
+  const { data } = useGetHeroDataQuery("FAQ", {});
+
+  // State to manage the active question and the list of questions
+  const [activeQuestion, setActiveQuestion] = useState<number | null>(null);
   const [questions, setQuestions] = useState<any[]>([]);
 
+  // useEffect to update the questions when data changes
   useEffect(() => {
     if (data) {
-      setQuestions(data.layout?.faq);
+      setQuestions(data.layout?.faq || []);
     }
   }, [data]);
 
-  const toggleQuestion = (id: any) => {
+  // Function to toggle the active question
+  const toggleQuestion = (id: number) => {
     setActiveQuestion(activeQuestion === id ? null : id);
   };
 
   return (
     <div>
-         <div className="w-[90%] 800px:w-[80%] m-auto">
+      <div className="w-[90%] 800px:w-[80%] m-auto">
         <h1 className={`${styles.title} 800px:text-[40px]`}>
           Frequently Asked Questions
         </h1>
         <div className="mt-12">
           <dl className="space-y-8">
-            {questions?.map((q) => (
-              <div key={q.id}
-              className={`${
-                q._id !== questions[0]?._id && "border-t"
-              } border-gray-200 pt-6`}
-              >
+            {questions.map((q) => (
+              <div key={q.id} className={`${
+                q.id !== questions[0]?.id && "border-t"
+              } border-gray-200 pt-6`}>
                 <dt className="text-lg">
                   <button
                     className="flex items-start justify-between w-full text-left focus:outline-none"
-                    onClick={() => toggleQuestion(q._id)}
+                    onClick={() => toggleQuestion(q.id)}
                   >
                     <span className="font-medium text-black dark:text-white">{q.question}</span>
                     <span className="ml-6 flex-shrink-0">
-                      {activeQuestion === q._id ? (
+                      {activeQuestion === q.id ? (
                         <HiMinus className="h-6 w-6 text-black dark:text-white" />
                       ) : (
                         <HiPlus className="h-6 w-6 text-black dark:text-white" />
@@ -50,7 +53,7 @@ const FAQ = (props: Props) => {
                     </span>
                   </button>
                 </dt>
-                {activeQuestion === q._id && (
+                {activeQuestion === q.id && (
                   <dd className="mt-2 pr-12">
                     <p className="text-base font-Poppins text-black dark:text-white">{q.answer}</p>
                   </dd>
@@ -59,12 +62,13 @@ const FAQ = (props: Props) => {
             ))}
           </dl>
         </div>
+        {/* Adding some spacing */}
         <br />
         <br />
         <br />
-      </div> 
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default FAQ
+export default FAQ;
